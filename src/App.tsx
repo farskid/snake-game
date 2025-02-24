@@ -135,6 +135,11 @@ function App() {
           ...prev,
           speed: prev.speed * 1.2,
         }));
+        try {
+          window.navigator.vibrate(200);
+        } catch {
+          console.log("Vibration not supported");
+        }
       }
 
       setSnake((prev) => {
@@ -171,6 +176,59 @@ function App() {
 
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [moveSnake, gameState.gameOver]);
+
+  useEffect(() => {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    const handleTouchStart = (event: TouchEvent) => {
+      touchStartX = event.changedTouches[0].clientX;
+      touchStartY = event.changedTouches[0].clientY;
+    };
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      touchEndX = event.changedTouches[0].clientX;
+      touchEndY = event.changedTouches[0].clientY;
+      handleSwipeGesture();
+    };
+
+    const handleSwipeGesture = () => {
+      if (gameState.gameOver) return;
+
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal swipe
+        if (deltaX > 50) {
+          // Detect right swipe
+          moveSnake(Direction.Right);
+        } else if (deltaX < -50) {
+          // Detect left swipe
+          moveSnake(Direction.Left);
+        }
+      } else {
+        // Vertical swipe
+        if (deltaY > 50) {
+          // Detect down swipe
+          moveSnake(Direction.Down);
+        } else if (deltaY < -50) {
+          // Detect up swipe
+          moveSnake(Direction.Up);
+        }
+      }
+    };
+
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchend", handleTouchEnd);
+
+    return () => {
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [moveSnake, gameState.gameOver]);
 
