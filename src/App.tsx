@@ -186,11 +186,13 @@ function App() {
     let touchEndY = 0;
 
     const handleTouchStart = (event: TouchEvent) => {
+      event.preventDefault();
       touchStartX = event.changedTouches[0].clientX;
       touchStartY = event.changedTouches[0].clientY;
     };
 
     const handleTouchEnd = (event: TouchEvent) => {
+      event.preventDefault();
       touchEndX = event.changedTouches[0].clientX;
       touchEndY = event.changedTouches[0].clientY;
       handleSwipeGesture();
