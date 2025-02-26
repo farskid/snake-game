@@ -9,6 +9,10 @@ body {
   -webkit-overscroll-behavior: contain;
 }
 
+p {
+  margin: 0;
+}
+
 @keyframes blinking {
   0%,
   100% {
